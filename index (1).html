@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Best202303 · 兴趣挖掘</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080F;--bg2:#0C1019;--bg3:rgba(255,255,255,0.025);--border:rgba(255,255,255,0.06);--text:#E2E8F0;--text2:#94A3B8;--text3:#475569;--accent:#6366F1;--accent2:#818CF8;--green:#10B981;--red:#F43F5E;--amber:#F59E0B;--cyan:#06B6D4;--purple:#A855F7}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk','Noto Sans SC',system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+.page{display:none;animation:fadeIn .4s ease}.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 0}
+nav .container{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:15px;font-weight:700;color:var(--accent2);cursor:pointer;letter-spacing:-.5px}
+.nav-logo span{opacity:.4;font-weight:400;margin-left:6px;font-size:12px}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.nav-links a{font-size:12px;padding:5px 12px;border-radius:6px;color:var(--text3);text-decoration:none;transition:all .2s;border:1px solid transparent}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.2)}
+.hero{padding:80px 0 48px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(99,102,241,0.08) 0%,transparent 70%);pointer-events:none}
+.hero h1{font-size:42px;font-weight:700;letter-spacing:-1.5px;background:linear-gradient(135deg,#E2E8F0 30%,#818CF8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px;line-height:1.2}
+.hero p{font-size:16px;color:var(--text2);max-width:600px;line-height:1.8}
+.hero .stats{display:flex;gap:32px;margin-top:32px;flex-wrap:wrap}
+.hero .stat-num{font-size:32px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace}
+.hero .stat-label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:16px;position:relative;overflow:hidden;transition:border-color .3s}
+.card:hover{border-color:rgba(255,255,255,0.1)}
+.card-glow{position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;filter:blur(50px);pointer-events:none;opacity:.5}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:32px 0}
+.topic-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:20px 22px;cursor:pointer;transition:all .3s;text-decoration:none;color:inherit;position:relative;overflow:hidden}
+.topic-card:hover{border-color:rgba(99,102,241,0.3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.topic-icon{font-size:28px;margin-bottom:10px;display:block}
+.topic-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.topic-count{font-size:12px;color:var(--text3)}
+.topic-bar{height:3px;background:rgba(255,255,255,0.04);border-radius:2px;margin-top:12px;overflow:hidden}
+.topic-bar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+.section-header{font-size:13px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin:48px 0 20px;display:flex;align-items:center;gap:10px}
+.section-header::after{content:'';flex:1;height:1px;background:var(--border)}
+.insight-box{border-radius:12px;padding:18px 20px;margin-bottom:12px;font-size:14px;line-height:1.8}
+.insight-box.purple{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.12)}
+.insight-box.green{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.12)}
+.insight-box.amber{background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.12)}
+.insight-box.red{background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.12)}
+.insight-label{font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:6px;display:block}
+.insight-label.purple{color:var(--accent2)}.insight-label.green{color:var(--green)}.insight-label.amber{color:var(--amber)}.insight-label.red{color:var(--red)}
+.quote-card{background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px;padding:16px 18px;margin-bottom:10px}
+.quote-text{font-size:13px;color:var(--text2);line-height:1.7}
+.quote-meta{display:flex;gap:12px;margin-top:8px;font-size:11px}
+.quote-likes{color:var(--red)}
+.topic-hero{padding:60px 0 32px;position:relative}
+.topic-hero .back{font-size:12px;color:var(--text3);text-decoration:none;margin-bottom:16px;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+.topic-hero .back:hover{color:var(--text)}
+.topic-hero h2{font-size:32px;font-weight:700;letter-spacing:-1px;margin-bottom:8px;display:flex;align-items:center;gap:14px}
+.topic-hero .meta{font-size:13px;color:var(--text3)}
+.tag{display:inline-block;font-size:10px;padding:2px 10px;border-radius:20px;font-weight:600}
+.tag.purple{background:rgba(99,102,241,0.15);color:var(--accent2)}
+.tag.green{background:rgba(16,185,129,0.15);color:var(--green)}
+.tag.amber{background:rgba(245,158,11,0.15);color:var(--amber)}
+.tag.red{background:rgba(244,63,94,0.15);color:var(--red)}
+.action-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}
+.action-phase{padding:22px;border-radius:14px;position:relative}
+.action-phase .phase-tag{position:absolute;top:14px;right:14px;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
+.action-phase h4{font-size:14px;font-weight:700;margin-bottom:14px}
+.action-item{display:flex;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);line-height:1.6}
+.action-bullet{flex-shrink:0;margin-top:3px}
+.tool-cloud{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.tool-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:10px;font-weight:600}
+.tool-pill .cnt{font-size:10px;background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:6px;color:var(--text3)}
+footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;text-align:center;font-size:12px;color:var(--text3)}
+@media(max-width:640px){.topic-grid{grid-template-columns:1fr}.action-timeline{grid-template-columns:1fr}.hero h1{font-size:28px}.hero .stats{gap:20px}.nav-links{gap:2px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="nav-logo" onclick="navigate('home')">Best202303 <span>兴趣挖掘</span></div>
+    <div class="nav-links" id="navLinks"></div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page" id="page-home">
+<div class="container">
+  <div class="hero">
+    <h1>Best202303<br>兴趣挖掘</h1>
+    <p>对近 900 条信息消费记录进行深度内容挖掘，提炼跨领域洞察、识别隐藏的兴趣模式，并转化为可执行的行动建议。</p>
+    <div class="stats">
+      <div><div class="stat-num">893</div><div class="stat-label">条信息</div></div>
+      <div><div class="stat-num">11</div><div class="stat-label">兴趣领域</div></div>
+      <div><div class="stat-num">94%</div><div class="stat-label">中文内容</div></div>
+      <div><div class="stat-num">4</div><div class="stat-label">核心洞察</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-glow" style="background:rgba(99,102,241,0.15)"></div>
+    <span class="tag purple" style="margin-bottom:12px">画像</span>
+    <p style="font-size:15px;line-height:1.9;color:var(--text)">
+      <strong style="color:var(--accent2)">AI 原住民型的技术投资者。</strong>核心关注 Agent 自动化和 AI 工具链（合计占比超 30%），同时持续追踪投资宏观和认知升级。不是被动消费信息——而是在系统性地搭建 AI 时代的个人基础设施：从数字身份、服务器、到完整的 AI 工具栈。
+    </p>
+  </div>
+
+  <div class="section-header">🌳 兴趣技能树 · 点击深入</div>
+  <div class="topic-grid" id="topicGrid"></div>
+
+  <div class="section-header">🔮 跨领域深层洞察</div>
+
+  <div class="card">
+    <div class="card-glow" style="background:rgba(244,63,94,0.12)"></div>
+    <span class="tag red">趋势</span>
+    <h3 style="font-size:17px;font-weight:700;margin:10px 0 8px">应用层大灭绝正在发生</h3>
+    <p style="font-size:14px;color:var(--text2);line-height:1.8">
+      当基础模型厂商直接提供 Skills 和插件，中间的应用层被压缩甚至消灭。法律 SaaS -14%、税务 SaaS -13%——华尔街称之为「SaaS 末日」。兴趣记录中对 AI 冲击和软件股走势的同时追踪，印证了对这一趋势的高度敏感。<strong style="color:var(--text)">这不是假设，这已经在发生。</strong>
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-glow" style="background:rgba(99,102,241,0.12)"></div>
+    <span class="tag purple">机会</span>
+    <h3 style="font-size:17px;font-weight:700;margin:10px 0 8px">「一个人 = 一支团队」的时代已来</h3>
+    <p style="font-size:14px;color:var(--text2);line-height:1.8">
+      有人用 Opus 4.6 + Agent Teams 不到一小时做出完整产品；「不到 100 美元开一家硅谷级初创公司」不再是口号。从 AI 编程到独立开发变现的几乎所有环节都有覆盖——知识储备已就位。<strong style="color:var(--text)">现在差的只是选一个场景，真正动手。</strong>
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-glow" style="background:rgba(245,158,11,0.12)"></div>
+    <span class="tag amber">警示</span>
+    <h3 style="font-size:17px;font-weight:700;margin:10px 0 8px">答案其实自己已经说过：「90% 装完就吃灰」</h3>
+    <p style="font-size:14px;color:var(--text2);line-height:1.8">
+      近 900 条记录中有大量未被整理和执行的内容。信息囤积 ≠ 知识内化。认知类记录中反复出现「无聊是新的智商」「短视频是认知衰退」——<strong style="color:var(--text)">问题在哪里其实已经很清楚了。</strong>
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-glow" style="background:rgba(16,185,129,0.12)"></div>
+    <span class="tag green">优势</span>
+    <h3 style="font-size:17px;font-weight:700;margin:10px 0 8px">认知框架正在隐性成型</h3>
+    <p style="font-size:14px;color:var(--text2);line-height:1.8">
+      从「AI 的放大效应像投资——100 万乘 100 倍是一个亿，100 块乘 100 倍只有 1 万」到「上下文工程而非模型微调才是护城河」再到「超算集群每天只用来聊天写 PPT 是真正的浪费」——底层思维框架在不自觉地构建中。<strong style="color:var(--text)">把它显性化，就是最大的竞争力。</strong>
+    </p>
+  </div>
+
+  <div class="section-header">🛠️ 工具宇宙</div>
+  <div class="tool-cloud">
+    <div class="tool-pill" style="font-size:20px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:var(--accent2)">Claude Code <span class="cnt">46</span></div>
+    <div class="tool-pill" style="font-size:18px;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.15);color:var(--red)">OpenClaw <span class="cnt">38</span></div>
+    <div class="tool-pill" style="font-size:17px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);color:var(--green)">Skills <span class="cnt">36</span></div>
+    <div class="tool-pill" style="font-size:16px;background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.12);color:var(--red)">ClawdBot <span class="cnt">24</span></div>
+    <div class="tool-pill" style="font-size:15px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.12);color:var(--amber)">DeepSeek <span class="cnt">13</span></div>
+    <div class="tool-pill" style="font-size:14px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1);color:var(--accent)">Cursor <span class="cnt">10</span></div>
+    <div class="tool-pill" style="font-size:14px;background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.1);color:var(--cyan)">Obsidian <span class="cnt">9</span></div>
+    <div class="tool-pill" style="font-size:13px;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.1);color:var(--purple)">Manus <span class="cnt">7</span></div>
+    <div class="tool-pill" style="font-size:13px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.1);color:var(--green)">MCP <span class="cnt">6</span></div>
+    <div class="tool-pill" style="font-size:13px;background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.08);color:var(--cyan)">Figma <span class="cnt">6</span></div>
+    <div class="tool-pill" style="font-size:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text3)">Cloudflare <span class="cnt">5</span></div>
+    <div class="tool-pill" style="font-size:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text3)">v0 <span class="cnt">5</span></div>
+  </div>
+  <p style="font-size:13px;color:var(--text3);margin-top:8px;line-height:1.7">
+    <strong style="color:var(--accent2)">Claude Code (46)</strong> 是编程 AI 首选，远超 Cursor (10)。<strong style="color:var(--red)">OpenClaw + ClawdBot (62)</strong> 是最投入的 Agent 生态。Skills/MCP (42) 表明已在关注 AI 连接层——少数人才意识到的关键基础设施。
+  </p>
+
+  <div class="section-header">🗺️ 行动路线图</div>
+  <div class="action-timeline">
+    <div class="action-phase" style="background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.12)">
+      <div class="phase-tag" style="background:rgba(16,185,129,0.2);color:var(--green)">Quick Win</div>
+      <h4 style="color:var(--green)">本周</h4>
+      <div class="action-item"><span class="action-bullet" style="color:var(--green)">◆</span><span>在 Mac 上跑蒸馏模型 4Bit（$52 成本复现顶级能力）</span></div>
+      <div class="action-item"><span class="action-bullet" style="color:var(--green)">◆</span><span>一键部署 AI 助理到个人服务器</span></div>
+      <div class="action-item"><span class="action-bullet" style="color:var(--green)">◆</span><span>整理 Prompt 模板，按「编程/创作/分析」归档</span></div>
+    </div>
+    <div class="action-phase" style="background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.12)">
+      <div class="phase-tag" style="background:rgba(99,102,241,0.2);color:var(--accent2)">Build</div>
+      <h4 style="color:var(--accent2)">本月</h4>
+      <div class="action-item"><span class="action-bullet" style="color:var(--accent2)">◆</span><span>用 Agent Teams 完成一个完整项目</span></div>
+      <div class="action-item"><span class="action-bullet" style="color:var(--accent2)">◆</span><span>安装 4 个高质量 Skill 并日常使用</span></div>
+      <div class="action-item"><span class="action-bullet" style="color:var(--accent2)">◆</span><span>搭建完整数字身份：号码 → 服务器 → 支付 → API</span></div>
+    </div>
+    <div class="action-phase" style="background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.12)">
+      <div class="phase-tag" style="background:rgba(168,85,247,0.2);color:var(--purple)">Ship</div>
+      <h4 style="color:var(--purple)">本季度</h4>
+      <div class="action-item"><span class="action-bullet" style="color:var(--purple)">◆</span><span>选一个垂直场景，用 AI 工具链做出可变现 MVP</span></div>
+      <div class="action-item"><span class="action-bullet" style="color:var(--purple)">◆</span><span>构建个人 AI 自动化：Agent + 知识库 + 工作流</span></div>
+      <div class="action-item"><span class="action-bullet" style="color:var(--purple)">◆</span><span>把认知洞察提炼为「AI 时代个人操作手册」</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="topicPages"></div>
+
+<footer>
+  <div class="container">
+    Best202303 · 兴趣挖掘<br>
+    <span style="opacity:.5;font-size:11px">内容洞察优先 · 兴趣领域深挖 · 可执行的行动建议</span>
+  </div>
+</footer>
+
+<script>
+const TOPICS = [
+  {
+    id:"agent", icon:"\u{1F916}", name:"Agent & \u81EA\u52A8\u5316", count:141, color:"#F43F5E", pct:"15.8%",
+    tagline:"\u4ECE\u5DE5\u5177\u5230\u4F19\u4F34\u2014\u2014Agent \u6B63\u5728\u83B7\u5F97\u300C\u4EBA\u683C\u300D",
+    insight:"兴趣信号中有一条清晰叙事线：从「工具型 Agent」到「拟人化 Agent」的进化。OpenClaw 的提示词设计是标志性案例——不是在写指令，而是赋予 Agent 独立人格，让它真正变成人类伙伴。这不是营销话术，而是 Agent 设计哲学的根本转变。\n\n同时追踪了 Agent 的多个落地场景：用 Opus 4.6 + Agent Teams 一小时做出完整产品；有团队成员做了「数字分身」整合进办公群、可直接调度干活；用 Agent 爬数据时内置浏览器比 Chrome 插件更稳定。\n\n另一个重要信号：tmux 在 Agent 时代复兴。Agent Team 模式下需要同时观察多个 Agent 工作，tmux 变得流行——这种「基础设施因 AI 而重新流行」的模式值得持续关注。",
+    action:"1. 从 OpenClaw 提示词工程入手，学习如何赋予 Agent「人格」而非仅仅是「功能」\n2. 搭建第一个多 Agent 协作场景：Agent Teams + tmux\n3. 研究 Manus 联创那篇「上下文工程才是护城河」——理解 Agent 竞争力来源",
+    quotes:[
+      {text:"OpenClaw 的提示词写得真好，让 Agent 不再是工具，而是赋予独立人格，真正变成人类的伙伴。强烈推荐学 Agent 开发的都来学习。",likes:812},
+      {text:"Opus 4.6 加 Agent Teams，不到一小时就完成了一个完整产品——可视化配置 MCP、Skill 和 Plugin。",likes:341},
+      {text:"Agent Team 模式后 tmux 会变得流行。自动给不同 Agent 开窗格，查看工作细节，随时对话调整。",likes:215},
+      {text:"有团队成员做了「数字分身」整合进办公群，可以直接调度它干活或管理任务。",likes:0}
+    ]
+  },
+  {
+    id:"mcp", icon:"\u{1F50C}", name:"MCP & Skills \u751F\u6001", count:58, color:"#10B981", pct:"6.5%",
+    tagline:"AI \u751F\u6001\u7684\u300CUSB \u63A5\u53E3\u300D\u2014\u2014\u8FDE\u63A5\u5C42\u624D\u662F\u771F\u6B63\u7684\u6218\u573A",
+    insight:"这是信息密度最高的领域。核心事件只有一个，但从多个角度被反复关注——基础模型厂商发布 Skills/插件导致 SaaS 股暴跌。\n\n关键洞察：「第一次，一家基础模型公司无视了 API 层，直接吞噬了应用层。」补充数据：汤森路透每年靠法律工具赚 60 亿美元，AI 每月只要 20 多美元。\n\n更深层的判断来自一条低关注但极有价值的内容：「软件吃掉世界，Skill 吃掉工作。百万级 Skill 将在 2-3 年内涌现，远超 App Store 达到同等规模的速度。无人公司将形成——人类从 in the loop 变成 on the loop。」\n\n关于「90% 吃灰」问题的最佳回答：从 10 万个开源 Skill 中筛出真正能干活的——筛选能力本身才是壁垒。",
+    action:"1. 安装 Superpowers（4.2 万 GitHub 星，14 个 Skill 覆盖完整开发流程）\n2. 尝试写一个自定义 Skill——把最常用的工作流封装起来\n3. 关注 Skill 生态的「策展人」角色——帮别人筛选 Skill 本身就是变现机会",
+    quotes:[
+      {text:"基础模型厂商发布 11 个插件。几小时内 2850 亿美元灰飞烟灭。第一次，直接吞噬应用层。华尔街称之为「SaaS 杀手」。",likes:1105},
+      {text:"从 10 万个开源 Skill 里筛出 4 个真正能干活的神器。Superpowers 4.2 万星，内置 14 个 Skill 覆盖完整开发流程。",likes:586},
+      {text:"软件吃掉世界，Skill 吃掉工作。百万级 Skill 将在 2-3 年内涌现。无人公司将形成——人类从 in the loop 变成 on the loop。",likes:0},
+      {text:"导火索是 Cowork 插件——能自动化法律研究、销售、营销。法律工具巨头年赚 60 亿，AI 每月只要 20 多美元。",likes:37}
+    ]
+  },
+  {
+    id:"coding", icon:"\u2328\uFE0F", name:"AI \u7F16\u7A0B\u5B9E\u6218", count:85, color:"#6366F1", pct:"9.5%",
+    tagline:"\u4ECE\u8F85\u52A9\u5230\u81EA\u4E3B\u2014\u2014\u7F16\u7A0B AI \u6B63\u5728\u8DE8\u8FC7\u4E34\u754C\u70B9",
+    insight:"偏好排序清晰：Claude Code > Cursor > Copilot。全世界职业开发者约 2000-3000 万，但 Claude Code 深度用户只有几十万——早期采用者的窗口仍然打开。\n\n最有趣的概念：Vibe Coding。几年前还有人抱怨 Electron is cancer，现在 Vibe Coding 快成主流了——这是对软件工程文化的根本性冲击。\n\n一个重要纠偏：「别再研究提示词工程了，Vibe Coding 的核心是对话工程——把和 AI 的交流当成合作对话，边聊边想、边做边调、逐步迭代。」\n\n安全问题也进入了视野：AI Agent 在本地裸奔运行的风险，推荐用 Linux 虚拟机沙盒隔离。还有 Loupe 这种让 AI 读懂 Mac 界面结构的新工具。",
+    action:"1. 开启 Claude Code 的 /insights 命令，让它分析编程习惯并给出改进建议\n2. 练习「对话工程」而非「提示词工程」——把 AI 当成结对编程伙伴\n3. 安装沙盒环境：在 macOS 上用 Linux 虚拟机隔离 AI Agent，防止误操作",
+    quotes:[
+      {text:"Claude Code 推出 /insights 命令，读取过去一个月消息记录，总结项目和工作方式，给出改进建议。",likes:467},
+      {text:"全世界职业开发者 2000-3000 万，Claude Code 深度用户只有几十万。好用程度 Claude 最强。",likes:234},
+      {text:"别再研究提示词工程了，Vibe Coding 的核心是对话工程——把和 AI 的交流当成合作对话，边聊边想、边做边调。",likes:0},
+      {text:"为 macOS 打造的极速 Linux 虚拟机沙盒。零配置启动，防止 AI 误删文件或读取隐私。",likes:187}
+    ]
+  },
+  {
+    id:"content", icon:"\u{1F3A8}", name:"AI \u5185\u5BB9\u521B\u4F5C", count:89, color:"#A855F7", pct:"10.0%",
+    tagline:"\u521B\u4F5C\u8303\u5F0F\u8FC1\u79FB\u2014\u2014AI Native \u4E0D\u662F\u5DE5\u5177\u5347\u7EA7\uFF0C\u662F\u6D41\u7A0B\u91CD\u6784",
+    insight:"互动量最高的内容就来自这个领域——Figma AI 矢量转换。但更深的洞察在于同时关注了 AI PPT 四大技术流派分析：HTML 生成流派 vs OOXML 直接生成 vs 代码转 PPT vs Skills 直出。\n\n这说明关注的不只是工具效果，更是技术路线选择。Claude Opus 4.6 的 Skills 方式直接生成 PPTX，对 AI PPT 市场的冲击被评价为「太可怕了」。\n\n视频方面：Kling v3「完全无法分辨真假」。结合「提示词生成爆炸拆解图 → 还原图 → Kling 首尾帧视频」的工作流——一条完整的 AI 内容生产线已经可见。\n\n最务实的观察：「最有实操经验的 AI 商业出片分享，但离自动化流水线还差得远。很多环节值得沉淀为 Skills。」",
+    action:"1. 试跑完整流程：Figma AI 矢量化 → Claude PPT 生成 → Kling v3 视频\n2. 把最常用的内容创作流程封装为 Skill，降低重复劳动\n3. 找到 AI 商业出片的可复制变现路径",
+    quotes:[
+      {text:"Figma 把任何图片转成完美矢量图，半天飙了 100 万阅读。设计走向 AI Native 的关键一步。",likes:1789},
+      {text:"Claude Opus 4.6 对 AI PPT 市场冲击太大了！AI PPT 生成分 4 大技术流派：HTML 生成、OOXML、代码转换、Skills 直出。",likes:677},
+      {text:"这是 Kling v3 的效果，完全无法分辨真假了。",likes:386},
+      {text:"最有实操经验的 AI 商业出片分享，但离自动化流水线还差得远。很多环节值得沉淀为 Skills。",likes:452}
+    ]
+  },
+  {
+    id:"investing", icon:"\u{1F4C8}", name:"\u6295\u8D44 & \u5B8F\u89C2", count:152, color:"#F59E0B", pct:"17.0%",
+    tagline:"AI \u4E0D\u53EA\u662F\u6280\u672F\u8D8B\u52BF\u2014\u2014\u5B83\u6B63\u5728\u91CD\u5199\u6295\u8D44\u903B\u8F91",
+    insight:"这是数量最大的隐性领域（152 条，很多同时跨 AI 和投资）。独特之处：不是从金融角度看 AI，而是从 AI 从业者角度看金融。\n\n核心洞察链：模型厂商发布插件 → SaaS 股暴跌 → 应用层被吞噬。同一事件从三个不同角度被记录——这是在做三角验证。\n\n宏观面：黄金新高跑赢 BTC/ETH/SOL；亚马逊 Q4 盘后跌 10%，但「如果不砸几十亿买 GPU 才应该卖出——这种支出本身就是护城河」。\n\n加密侧关注合规美元通道和支付基础设施，而非炒币——成熟投资者的标志。\n\n最精辟的认知：「技术分析 90% 对也没用，剩下 10% 足以让加杠杆的人破产。大猩猩投资法之所以有效，因为不需要预测。」",
+    action:"1. 建立「AI 冲击 SaaS」监控清单：追踪法律/税务/咨询等垂直 SaaS 季报\n2. 分析记录中的投资框架，提炼个人 checklist（长期主义 + 事件驱动）\n3. 把「AI 从业者看金融」这个独特视角内容化——这是稀缺定位",
+    quotes:[
+      {text:"模型厂商发布 11 个插件。法律 SaaS -14%，税务 SaaS -13%。第一次，直接吞噬应用层。",likes:1105},
+      {text:"亚马逊盘后跌近 10%。华尔街讨厌资本支出。但如果不砸几十亿买 GPU，我才会卖出。这种支出本身就是护城河。",likes:137},
+      {text:"技术分析即使 90% 对也没用，剩下 10% 足以让加杠杆的人破产。大猩猩投资法有效，因为不需要预测。",likes:0}
+    ]
+  },
+  {
+    id:"cognition", icon:"\u{1F9E0}", name:"\u8BA4\u77E5 & \u601D\u7EF4", count:97, color:"#EC4899", pct:"10.9%",
+    tagline:"\u5728\u4FE1\u606F\u6D2A\u6D41\u4E2D\u4FDD\u6301\u6E05\u9192\u2014\u2014\u5143\u8BA4\u77E5\u9632\u7EBF",
+    insight:"认知类记录有两条隐藏主线：\n\n第一条是「AI 时代的焦虑管理」。一方面是「不要焦虑，你已经在前沿，要被抢蛋糕的是接受传统教育的学生们」；另一方面坦诚承认「确实是思路限制了我，一直以为自己敢给 AI 花钱，其实算不敢的」。焦虑与自我怀疑交替出现。\n\n第二条是「注意力保卫战」。一项 10 万人研究的结论：「大量使用短视频本质是主动认知衰退。如果你能为解决一个问题静坐 10 分钟不划屏幕，你就有巨大竞争优势。无聊是新的智商。」\n\n还有一条早期记录极有先见之明：「chatGPT 最大的改变是知识获取领域。以前幻想有传输线连入大脑直接拷贝知识，chatGPT 是另一种变相实现。」——这个判断现在看来完全成立。",
+    action:"1. 建立「注意力审计」习惯：每周记录深度思考时间 vs 信息浏览时间\n2. 把认知洞察提炼成 10 条「AI 时代生存原则」，贴在工作区\n3. 抛弃 PVP 思维，这是正和博弈不是零和游戏",
+    quotes:[
+      {text:"不要焦虑都在用 AI。你已经在前沿。要被抢蛋糕的是接受传统教育、毕业想找办公室工作的学生们。这是新时代的房地产。",likes:105},
+      {text:"10 万人研究证实，大量使用短视频本质是主动认知衰退。如果你能为解决一个问题静坐 10 分钟，就有巨大竞争优势。无聊是新的智商。",likes:0},
+      {text:"确实是思路限制了我。一直以为自己敢给 AI 花钱，但在目前阶段确实算不敢的。",likes:8},
+      {text:"超算集群每天只用来跑聊天模型、写 PPT——那基本就是超算闲置时代。底层基础设施潜力远没有被释放。",likes:0}
+    ]
+  },
+  {
+    id:"local", icon:"\u{1F4BB}", name:"\u672C\u5730\u6A21\u578B & \u5F00\u6E90", count:48, color:"#06B6D4", pct:"5.4%",
+    tagline:"$52 \u590D\u73B0\u9876\u7EA7\u80FD\u529B\u2014\u2014\u84B8\u998F\u6C11\u4E3B\u5316\u6B63\u5728\u53D1\u751F",
+    insight:"这个领域的记录质量极高。核心事件：花 $52.30 生成 250 条高质量数据，将 Claude-Opus-4.5 蒸馏到 GLM-4.7-Flash，用 unsloth 微调。结果是一般 Mac 可以跑 4Bit 版本。\n\n这条链路意义远超技术细节——顶级闭源模型的能力可以低成本迁移到本地。最精炼的总结：「属于是把 Opus 4.5 搬到本地了。」\n\n另一个亮点：MiniCPM-o 4.5 支持非阻塞全双工对话（一边回答一边听你说话），被评价为「年初头号杀 LLM 项目」。GLM 的 OCR 效果达到 SOTA 水平且开源免费。\n\n兴趣模式显示：关注的不是「哪个开源模型最强」，而是「如何用最低成本获得接近闭源的能力」——非常实用主义的策略。",
+    action:"1. 在 Mac 上跑 GLM-4.7-Flash 4Bit 蒸馏模型，体验本地顶级能力\n2. 测试 GLM OCR（免费 SOTA）——替代付费 OCR 服务\n3. 关注蒸馏成本持续下降趋势——当 $10 就能蒸馏专用模型时，商业模式会变",
+    quotes:[
+      {text:"用 Claude-Opus-4.5 造高质量数据蒸馏 GLM-4.7-Flash。整个数据集生成只花 $52.30，250 条样本。",likes:462},
+      {text:"用 GLM4.7-flash 蒸馏了 Opus 4.5。一般 Mac 也能跑 4Bit，属于是把 Opus 4.5 搬到本地了。",likes:387},
+      {text:"MiniCPM-o 4.5 支持非阻塞全双工对话——一边回答问题一边收听讲话。开发者社区已经炸锅了。",likes:450}
+    ]
+  },
+  {
+    id:"prompt", icon:"\u270D\uFE0F", name:"Prompt & \u4E0A\u4E0B\u6587\u5DE5\u7A0B", count:50, color:"#8B5CF6", pct:"5.6%",
+    tagline:"\u4ECE Prompt Engineering \u5230 Context Engineering \u7684\u8BA4\u77E5\u8DC3\u8FC1",
+    insight:"记录呈现一个清晰的认知升级过程：收集 Prompt 技巧 → 理解 System Prompt 设计 → 领悟「上下文工程」的更高维概念。\n\nManus 联创的经验是转折点：「为什么上下文工程，而非模型微调，才是护城河？10 年 NLP 经验的血泪教训。」\n\n进一步推进：「别再研究提示词工程了，Vibe Coding 的核心是对话工程——边聊边想、边做边调、逐步迭代。」\n\nOpenClaw 的提示词设计是最佳实践——不是在写 prompt，而是在设计 Agent 的人格系统。从「给 AI 一个指令」到「赋予 AI 一个身份」，这是质的飞跃。",
+    action:"1. 停止收集零散 Prompt——建立「上下文模板库」（context templates）\n2. 研究 OpenClaw 的提示词设计哲学：如何赋予 Agent 身份而非指令\n3. 实践对话工程：把每次 AI 协作当成结对编程，而非一次性指令",
+    quotes:[
+      {text:"OpenClaw 的提示词让 Agent 不再是工具，而是赋予独立人格。这套设计哲学值得所有 Agent 开发者学习。",likes:812},
+      {text:"Manus 联创的血泪教训：为什么上下文工程，而非模型微调，才是护城河？",likes:0},
+      {text:"别再研究提示词工程了。Vibe Coding 的核心是对话工程——边聊边想、边做边调。",likes:0}
+    ]
+  },
+  {
+    id:"indie", icon:"\u{1F4B0}", name:"\u72EC\u7ACB\u5F00\u53D1 & \u53D8\u73B0", count:40, color:"#F97316", pct:"4.5%",
+    tagline:"SaaS \u672B\u65E5\u662F\u5371\u673A\uFF0C\u4E5F\u662F\u4E2A\u4EBA\u5F00\u53D1\u8005\u7684\u9EC4\u91D1\u7A97\u53E3",
+    insight:"这一领域呈现矛盾而有趣的张力：一边是「SaaS 末日」（大公司应用层被 AI 吞噬），一边是「100 美元开公司」的个人机会。\n\n这不是矛盾——是硬币两面。大公司 SaaS 被 Skills 替代，但小而美、高度垂直的个人产品反而有空间。Skills 解决标准化场景，真正有价值的是对特定领域的深度理解。\n\n一条灵魂拷问反复出现：「很多高薪岗位本质是精致牢笼，给你刚好够不敢走。最可怕的不是忙，而是把自我牺牲当成荣耀。」——这是关注独立开发的底层动力。\n\nAnthropic 营收曲线（0→1亿→10亿→100亿）说明：AI 领域增速超过所有人预期。在这个增速中，个人开发者的杠杆率最高。",
+    action:"1. 选一个最懂的垂直领域，用 Claude Code + Vercel 一周内做出 MVP\n2. 不做「通用 SaaS」——做 Skills 做不到的、需要领域知识的垂直产品\n3. 关注「AI 原生」变现模式：不是卖软件，而是卖 Skill / 工作流 / 解决方案",
+    quotes:[
+      {text:"只需一个人不到 100 美元就能开一个硅谷级初创公司：免费模型开发、2 美元域名、8 美元蓝标账号。That\u2019s all.",likes:0},
+      {text:"华尔街称之为 SaaS 末日。Cowork 插件发布后，软件股被血洗。",likes:124},
+      {text:"很多高薪岗位本质是精致牢笼。给你刚好够不敢走，但不够让你真正自由。看清这一点，就已经迈出自由的第一步。",likes:0}
+    ]
+  },
+  {
+    id:"infra", icon:"\u{1F3D7}\uFE0F", name:"\u6570\u5B57\u57FA\u7840\u8BBE\u65BD", count:99, color:"#64748B", pct:"11.1%",
+    tagline:"\u670D\u52A1\u5668 + \u8EAB\u4EFD + \u652F\u4ED8\u2014\u2014AI \u65F6\u4EE3\u7684\u300C\u6C34\u7535\u7164\u300D",
+    insight:"这是最「实用主义」的领域。99 条记录覆盖了一套完整的数字基础设施搭建指南：\n\n第一层 · 网络接入：低价海外服务器（$10/年级别）、纯净 IP\n第二层 · 身份认证：海外手机号（eSIM 方案）、虚拟号码\n第三层 · 支付通道：加密支付卡、合规美元通道\n第四层 · AI 服务：一键部署 AI 助理、低价 API 中转、云服务赠金\n\n兴趣模式显示在系统性地解决一个问题：如何无摩擦地接入全球 AI 服务生态。这不是技术问题——这是数字生存问题。",
+    action:"1. 做一张「数字身份完整度」检查清单，逐项补齐\n2. 优先搭建支付通道——这是大多数人卡住的地方\n3. 一键部署 AI 服务到个人服务器，把基础设施彻底跑通",
+    quotes:[
+      {text:"$10 一年海外服务器，直接选择预装 AI 镜像。注册门槛已经降低。",likes:166},
+      {text:"AI 助理一键部署：以前要折腾半天，现在一行命令搞定。",likes:235},
+      {text:"为了更好地给 AI 付费，必须有纯净 IP 的服务器。",likes:111},
+      {text:"云服务赠金 + 保姆级部署教程 + 各种信息差资源汇总。",likes:131}
+    ]
+  }
+];
+
+function navigate(p){window.location.hash=p}
+function renderPage(){
+  var h=window.location.hash.slice(1)||'home';
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.nav-links a').forEach(function(a){a.classList.toggle('active',a.dataset.page===h)});
+  if(h==='home'){document.getElementById('page-home').classList.add('active')}
+  else{var t=TOPICS.find(function(t){return t.id===h});if(t)renderTopicPage(t)}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderTopicPage(topic){
+  var el=document.getElementById('page-'+topic.id);
+  if(!el){el=document.createElement('div');el.className='page';el.id='page-'+topic.id;document.getElementById('topicPages').appendChild(el)}
+  var idx=TOPICS.findIndex(function(t){return t.id===topic.id});
+  var prev=idx>0?TOPICS[idx-1]:null;
+  var next=idx<TOPICS.length-1?TOPICS[idx+1]:null;
+  var insightHtml=topic.insight.split('\n\n').map(function(p){return '<p style="margin-bottom:12px;color:var(--text2)">'+p+'</p>'}).join('');
+  var actionHtml=topic.action.split('\n').map(function(l){return '<p style="margin-bottom:6px;color:var(--text2)">'+l+'</p>'}).join('');
+  var quotesHtml=topic.quotes.map(function(q){
+    var meta=q.likes>0?'<div class="quote-meta"><span class="quote-likes">\u2764\uFE0F '+q.likes.toLocaleString()+'</span></div>':'';
+    return '<div class="quote-card"><div class="quote-text">'+q.text+'</div>'+meta+'</div>';
+  }).join('');
+  var prevLink=prev?'<a href="#'+prev.id+'" style="color:var(--text3);text-decoration:none;font-size:13px">&larr; '+prev.icon+' '+prev.name+'</a>':'<span></span>';
+  var nextLink=next?'<a href="#'+next.id+'" style="color:var(--text3);text-decoration:none;font-size:13px">'+next.icon+' '+next.name+' &rarr;</a>':'<span></span>';
+  el.innerHTML='<div class="container"><div class="topic-hero"><a href="#home" class="back">&larr; \u8FD4\u56DE\u603B\u89C8</a><h2><span style="font-size:36px">'+topic.icon+'</span> '+topic.name+'</h2><div class="meta">'+topic.count+' \u6761\u8BB0\u5F55 &middot; \u5360\u6BD4 '+topic.pct+'</div><p style="font-size:16px;color:var(--text2);margin-top:12px;font-style:italic">'+topic.tagline+'</p></div><div class="section-header">\u{1F4A1} \u6DF1\u5EA6\u6D1E\u5BDF</div><div class="insight-box purple"><span class="insight-label purple">\u5174\u8DA3\u6316\u6398</span>'+insightHtml+'</div><div class="section-header">\u{1F3AF} \u884C\u52A8\u5EFA\u8BAE</div><div class="insight-box green"><span class="insight-label green">\u4E0B\u4E00\u6B65</span>'+actionHtml+'</div><div class="section-header">\u{1F525} \u4EE3\u8868\u6027\u5185\u5BB9</div>'+quotesHtml+'<div style="display:flex;justify-content:space-between;margin-top:40px;padding-top:20px;border-top:1px solid var(--border)">'+prevLink+nextLink+'</div></div>';
+  el.classList.add('active');
+}
+function init(){
+  document.getElementById('navLinks').innerHTML='<a href="#home" data-page="home">\u603B\u89C8</a>'+TOPICS.map(function(t){return '<a href="#'+t.id+'" data-page="'+t.id+'">'+t.icon+'</a>'}).join('');
+  document.getElementById('topicGrid').innerHTML=TOPICS.map(function(t){
+    var w=Math.max(10,(t.count/152)*100);
+    return '<a href="#'+t.id+'" class="topic-card"><span class="topic-icon">'+t.icon+'</span><div class="topic-name">'+t.name+'</div><div class="topic-count">'+t.count+' \u6761 &middot; '+t.pct+'</div><div class="topic-bar"><div class="topic-bar-fill" style="width:'+w+'%;background:'+t.color+'"></div></div></a>';
+  }).join('');
+  window.addEventListener('hashchange',renderPage);
+  renderPage();
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
